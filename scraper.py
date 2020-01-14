@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup as soup
 from urllib.request import urlopen
+import datetime
 
 my_url = "https://www.nordnet.no/market/no"
 
@@ -17,15 +18,15 @@ tabels = page_soup.find_all("div", {"class": "InstrumentsPanel__Padded-hx9m9d-1 
 most_traded = tabels[0]
 
 elements = most_traded.find_all("tr", {"class": "Tr__StyledTr-sc-1aap6l7-0 kdcphJ"})
-
-out_filename = "stock_prices_most_traded.csv"
+date = datetime.datetime.now().date()
+out_filename = str(date) + "_stock_prices_most_traded.csv"
 # norsk csv bruker ; som verdiskille og "," som komma
-headers = "stock_name;change;price \n"
+headers = "rank;stock_name;change;price \n"
 
 f = open(out_filename, "w")
 f.write(headers)
 
-for element in elements:
+for index, element in enumerate(elements):
     instrument_name = element.find("span", {"class": "Typography__StyledTypography-sc-10mju41-0 dmJcIB"})
 
     # includes %: instrument_change = element.find_all("td", {"class": "Td__StyledTd-sc-1r6yxrk-0 eSYZap"})
@@ -38,11 +39,11 @@ for element in elements:
     # Positive: Development__StyledDevelopment-hnn1ri-0 kokOki
     # Negative: Development__StyledDevelopment-hnn1ri-0 cuAsQS
     if instrument_name is not None:
-        instrument_name = instrument_name.text.replace(" ", "_")
+        instrument_name = instrument_name.text
         instrument_change = instrument_change["value"].replace(".", ",")
         instrument_price = instrument_price.text
         # print(instrument_name, instrument_change + '%', instrument_price)
-        print(instrument_name, instrument_change, instrument_price)
-        f.write(instrument_name + ";" + instrument_change + ";" + instrument_price + "\n")
+        print(index, instrument_name, instrument_change, instrument_price)
+        f.write(str(index) + ";" + instrument_name + ";" + instrument_change + ";" + instrument_price + "\n")
 
 f.close()
