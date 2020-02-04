@@ -1,8 +1,19 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import pandas as pd
+import plotly.graph_objs as go
+import csv
+
+csv.register_dialect('nor', delimiter=';')
+
+df = pd.read_csv("../scraped_data/historical_dataEQNR.csv", dialect='nor')
+print(df.head())
 
 
+fig = go.Figure(data=[go.Scatter(x=df["Date"], y=df["Adj Close**"], name="awd")])
+#fig.add_trace(go.Figure(data=[go.Scatter(x=df["Date"], y=df["Volume"], name="awd")]))
+#fig.show()
 app = dash.Dash(__name__)
 
 app.layout = html.Div(children=[
@@ -13,16 +24,8 @@ app.layout = html.Div(children=[
     '''),
 
     dcc.Graph(
-        id='example-graph',
-        figure={
-            'data': [
-                {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
-                {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'},
-            ],
-            'layout': {
-                'title': 'Stock data'
-            }
-        }
+    id='stock-graph',
+        figure=fig,
     )
 ])
 
