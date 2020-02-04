@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup as soup
 from urllib.request import urlopen
 import datetime
 
+
+#NO LONGER WORKS
 my_url = "https://www.nordnet.no/market/no"
 
 # open webpage
