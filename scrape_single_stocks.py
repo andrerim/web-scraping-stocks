@@ -17,55 +17,39 @@ raw_html = client.read()
 client.close()
 
 page_soup = soup(raw_html, "html.parser")
-title = page_soup.find("title")
+title = page_soup.find("title").text
 #Equinor ASA (EQNR) Stock Price, Quote, History & News - Yahoo Finance
-print(title.text)
+instr_name_pos = title.find("Stock Price")
+instr_name = title[:instr_name_pos]
 
-instrument_current_price = page_soup.find("span", {"data-reactid": "14"}).text
+instr_curr_price = page_soup.find("span", {"data-reactid": "14"}).text
 
-instrument_current_price_change = page_soup.find("span", {"data-reactid": "16"}).text
+instr_curr_price_change = page_soup.find("span", {"data-reactid": "16"}).text
+# +0.80 (+0.48%)
+value_percent_position = instr_curr_price_change.find("(")
+
+instr_curr_price_change_value = instr_curr_price_change[:value_percent_position-1]
+instr_curr_price_change_percent = instr_curr_price_change[value_percent_position+1:len(instr_curr_price_change)-1]
+
+
+instr_prev_close = page_soup.find("td", {"data-test": "PREV_CLOSE-value"}).find("span").text
+
+instr_price_open = page_soup.find("td", {"data-test": "OPEN-value"}).find("span").text
 
 
 
-instrument_previous_close = page_soup.find("td", {"data-test": "PREV_CLOSE-value"}).find("span").text
-
-instrument_price_open = page_soup.find("td", {"data-test": "OPEN-value"}).find("span").text
 date = datetime.datetime.now().date()
 
 
 out_filename = "../scraped_data/" + str(date) + "_" + ticker + ".csv"
 
 # norsk csv bruker ; som verdiskille og "," som komma
-headers = "stock_name;price;price_change \n"
+headers = "stock_name;price;price_change;price_change%;prev_close;open \n"
 
 f = open(out_filename, "w")
 f.write(headers)
 
-f.write(ticker + ";" + instrument_current_price + ";" + instrument_current_price_change + "\n")
+f.write(instr_name + ";" + instr_curr_price + ";" + instr_curr_price_change_value + ";" + instr_curr_price_change_percent + ";" + instr_prev_close + ";" + instr_price_open + "\n")
 
 
 f.close()
-def lol():
-
-
-    for index, element in enumerate(elements):
-        instrument_name = element.find("span", {"class": "Typography__StyledTypography-sc-10mju41-0 dmJcIB"})
-
-        # includes %: instrument_change = element.find_all("td", {"class": "Td__StyledTd-sc-1r6yxrk-0 eSYZap"})
-        instrument_change = element.find("span", {"class": "Development__StyledDevelopment-hnn1ri-0"})
-
-        instrument_price = element.find("td",
-                                        {"class": "Td__StyledTd-sc-1r6yxrk-0 eSYZap Media__StyledDiv-sc-1dic02p-0 fxoRoi"})
-
-        # instrument_change_negative = element.find("span", {"class": "Development__StyledDevelopment-hnn1ri-0 cuAsQS"})
-        # Positive: Development__StyledDevelopment-hnn1ri-0 kokOki
-        # Negative: Development__StyledDevelopment-hnn1ri-0 cuAsQS
-        if instrument_name is not None:
-            instrument_name = instrument_name.text
-            instrument_change = instrument_change["value"].replace(".", ",")
-            instrument_price = instrument_price.text
-            # print(instrument_name, instrument_change + '%', instrument_price)
-            print(index, instrument_name, instrument_change, instrument_price)
-            f.write(str(index) + ";" + instrument_name + ";" + instrument_change + ";" + instrument_price + "\n")
-
-    f.close()
