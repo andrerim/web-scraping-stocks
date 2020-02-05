@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup as soup
 from urllib.request import urlopen
+import os
 
 
 def scrape_historical_data(ticker):
@@ -30,6 +31,9 @@ def scrape_historical_data(ticker):
         for cols in row:
             table_headers += cols.text + ";"
 
+    dir_path = "../scraped_data"
+    if not os.path.isdir(dir_path):
+        os.mkdir(dir_path)
 
     out_filename = "../scraped_data/historical_data_" + instr_name + ".csv"
 
