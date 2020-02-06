@@ -4,7 +4,7 @@ import os
 
 
 def scrape_historical_data(ticker):
-
+    print("Fetching data ON", ticker)
     url_scrape = "https://finance.yahoo.com/quote/" + ticker + ".OL/history?p=" + ticker + ".OL"
 
     # open webpage
