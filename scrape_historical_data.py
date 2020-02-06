@@ -22,7 +22,6 @@ def scrape_historical_data(ticker):
     instr_name_pos_start = title.find("(") + 1
     instr_name_pos_end = title.find(".OL")
     instr_name = title[instr_name_pos_start:instr_name_pos_end]
-    print(instr_name)
 
 
     table_head = page_soup.find("thead")
