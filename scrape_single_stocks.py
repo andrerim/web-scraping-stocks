@@ -46,10 +46,7 @@ out_filename = "../scraped_data/" + str(date) + "_" + ticker + ".csv"
 # norsk csv bruker ; som verdiskille og "," som komma
 headers = "stock_name;price;price_change;price_change%;prev_close;open \n"
 
-f = open(out_filename, "w")
-f.write(headers)
+with open(out_filename, "w") as f:
+    f.write(headers)
+    f.write(instr_name + ";" + instr_curr_price + ";" + instr_curr_price_change_value + ";" + instr_curr_price_change_percent + ";" + instr_prev_close + ";" + instr_price_open + "\n")
 
-f.write(instr_name + ";" + instr_curr_price + ";" + instr_curr_price_change_value + ";" + instr_curr_price_change_percent + ";" + instr_prev_close + ";" + instr_price_open + "\n")
-
-
-f.close()

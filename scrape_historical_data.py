@@ -36,18 +36,16 @@ def scrape_historical_data(ticker):
 
     out_filename = "../scraped_data/historical_data_" + instr_name + ".csv"
 
-    f = open(out_filename, "w")
-    f.write(table_headers + "\n")
+    with open(out_filename, "w") as f:
+        f.write(table_headers + "\n")
 
-    table_body = page_soup.find("tbody")
+        table_body = page_soup.find("tbody")
 
-    for tab in table_body:
-        data = ""
-        for span in tab:
-            data += span.text + ";"
-        f.write(data + "\n")
-
-    f.close()
+        for tab in table_body:
+            data = ""
+            for span in tab:
+                data += span.text + ";"
+            f.write(data + "\n")
 
     return instr_name
 
