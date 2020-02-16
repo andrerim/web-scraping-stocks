@@ -5,7 +5,6 @@ import datetime
 ticker = "EQNR"
 
 url_scrape = "https://finance.yahoo.com/quote/" + ticker + ".OL?p=" + ticker + ".OL&.tsrc=fin-srch"
-#url_scrape = "https://finance.yahoo.com/quote/SSO.OL?p=SSO.OL&.tsrc=fin-srch"
 
 # open webpage
 client = urlopen(url_scrape)

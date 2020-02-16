@@ -7,21 +7,15 @@ import pandas as pd
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 
-
 import csv
 import os
-import platform
 import datetime
 
-from scrape_historical_data import scrape_historical_data
-
+from src.scrape_historical_data import scrape_historical_data
+from src.user_search_history import search_history
 csv.register_dialect('nor', delimiter=';')
 
-history_vals = {
-    "ticker": [],
-    "last": [],
-    "change%": []
-}
+
 
 def last_modified(path_to_file):
     try:
@@ -30,26 +24,6 @@ def last_modified(path_to_file):
     except OSError:
         # File probably doesnt exist
         return -1
-
-
-def search_history(ticker=None, last_change=None, init=False):
-    if init:
-        return go.Figure(data=[go.Table(header=dict(values=['Ticker', 'Last', 'Change%']),
-                                     cells=dict(values=[['-'], ['-'], ['-']]))
-                            ])
-
-
-    filename = "../scraped_data/historical_data_" + ticker + ".csv"
-    df = pd.read_csv(filename, dialect='nor')
-    history_vals["ticker"].insert(0, ticker)
-    history_vals["last"].insert(0, df["Adj Close**"][0])
-    history_vals["change%"].insert(0, 10)
-
-    fig = go.Figure(data=[go.Table(header=dict(values=['Ticker', 'Last', 'Change%']),
-                                     cells=dict(values=[history_vals["ticker"], history_vals["last"], history_vals["change%"]]))
-                            ])
-    return fig
-
 
 
 def draw_plot_stock(ticker):
@@ -67,8 +41,6 @@ def draw_plot_stock(ticker):
 
     try:
         fig = make_subplots(specs=[[{"secondary_y": True}]])
-
-        # fig = go.Figure()
 
         fig.add_trace(go.Scatter(x=df["Date"].iloc[::-1], y=df["Adj Close**"].iloc[::-1], name="Stock price"),
                       secondary_y=False)
@@ -102,7 +74,7 @@ table = search_history(init=True)
 
 # fig.show()
 
-# external_stylesheets = ['./style.css']
+#external_stylesheets = ['./style.css']
 
 app = dash.Dash(__name__)
 
@@ -141,6 +113,7 @@ app.layout = html.Div(children=[
 )
 def load_stock(val):
     if val is not None:
+        val = val.upper()
         fig = draw_plot_stock(val)
         if not fig == -1:
             return fig, search_history(val)

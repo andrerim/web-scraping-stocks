@@ -4,7 +4,7 @@ import os
 
 
 def scrape_historical_data(ticker):
-    print("Fetching data ON", ticker)
+    print("Fetching data on", ticker)
     url_scrape = "https://finance.yahoo.com/quote/" + ticker + ".OL/history?p=" + ticker + ".OL"
 
     # open webpage
@@ -19,6 +19,7 @@ def scrape_historical_data(ticker):
     page_soup = soup(raw_html, "html.parser")
     title = page_soup.find("title").text
     #Equinor ASA (EQNR) Stock Price, Quote, History & News - Yahoo Finance
+    # find instrument name
     instr_name_pos_start = title.find("(") + 1
     instr_name_pos_end = title.find(".OL")
     instr_name = title[instr_name_pos_start:instr_name_pos_end]
